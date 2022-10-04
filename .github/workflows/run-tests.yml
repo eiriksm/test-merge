@@ -18,12 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      PHP_VERSION: ${{ needs.version.outputs.php_version }}
-      COMPOSER_VERSION: ${{ needs.version.outputs.composer_version }}
-      DATABASE_VERSION: ${{ needs.version.outputs.database_version }}
+      COMPOSER_VERSION: 2
     # This container will run all the tests. PHP version is determined in version job.
     container:
-      image: nymediaas/php:${{ needs.version.outputs.php_version }}-cli
+      image: nymediaas/php:7.4-cli
       volumes:
         - ${{ github.workspace }}:/var/www/html
       env:
