@@ -1,0 +1,40 @@
+name: Test
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - customer-club-develop
+  pull_request:
+    branches:
+      - develop
+      - master
+      - customer-club-develop
+
+jobs:
+
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PHP_VERSION: ${{ needs.version.outputs.php_version }}
+      COMPOSER_VERSION: ${{ needs.version.outputs.composer_version }}
+      DATABASE_VERSION: ${{ needs.version.outputs.database_version }}
+    # This container will run all the tests. PHP version is determined in version job.
+    container:
+      image: nymediaas/php:${{ needs.version.outputs.php_version }}-cli
+      volumes:
+        - ${{ github.workspace }}:/var/www/html
+      env:
+        COMPOSER_DISCARD_CHANGES: 1
+        IS_CI_ENVIRONMENT: 1
+        COMPOSER_MEMORY_LIMIT: -1
+        COMPOSER_ALLOW_SUPERUSER: 1
+    steps:
+      - name: Select the composer version
+        run: |
+          composer --version
+          composer self-update
+          composer self-update --${COMPOSER_VERSION}
+          composer --version
